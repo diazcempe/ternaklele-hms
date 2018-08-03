@@ -23,6 +23,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Serilog;
+using Serilog.Sinks.MSSqlServer;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 using SimpleInjector.Integration.AspNetCore.Mvc;
@@ -42,6 +44,10 @@ namespace Api
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            #region Serilog
+            ConfigureSerilog();
+            #endregion
         }
 
         public IConfiguration Configuration { get; }
@@ -87,8 +93,14 @@ namespace Api
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         // Configure is called after ConfigureServices is called.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            #region Serilog
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
+            loggerFactory.AddSerilog();
+            #endregion
+
             #region SimpleInjector
             InitializeContainer(app);
             #endregion
@@ -144,6 +156,18 @@ namespace Api
             
             // Allow Simple Injector to resolve services from ASP.NET Core.
             _container.AutoCrossWireAspNetComponents(app);
+        }
+        #endregion
+
+        #region Serilog
+        /// <summary>
+        /// Initialise serilog
+        /// </summary>
+        private void ConfigureSerilog()
+        {
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(Configuration) // setup the usual literate console and rolling file sinks. configure events that is supposed to go to database sink
+                .CreateLogger();
         }
         #endregion
     }
