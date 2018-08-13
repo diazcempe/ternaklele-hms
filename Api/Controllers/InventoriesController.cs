@@ -28,7 +28,7 @@ namespace Api.Controllers
         [HttpGet]
         public async Task<IEnumerable<InventoryDto>> GetInventories()
         {
-            return await _service.GetInventories();
+            return await _service.GetInventoriesAsync();
         }
 
         // GET: api/Inventories/5
@@ -36,18 +36,14 @@ namespace Api.Controllers
         public async Task<IActionResult> GetInventory([FromRoute] long id)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            var inventory = await _context.Inventories.FindAsync(id);
+            var inventoryDto = await _service.GetInventoryAsync(id);
 
-            if (inventory == null)
-            {
+            if (inventoryDto == null)
                 return NotFound();
-            }
 
-            return Ok(inventory);
+            return Ok(inventoryDto);
         }
 
         // PUT: api/Inventories/5

@@ -4,57 +4,38 @@ using System.Linq;
 using System.Threading.Tasks;
 using Api.Models;
 using Api.Repositories;
+using AutoMapper;
 using Common.Dtos;
 
 namespace Api.Services
 {
     public interface IInventoriesService
     {
-        Task<IEnumerable<InventoryDto>> GetInventories();
+        Task<IEnumerable<InventoryDto>> GetInventoriesAsync();
+        Task<InventoryDto> GetInventoryAsync(long id);
     }
 
     public class InventoriesService : IInventoriesService
     {
         private readonly IInventoriesRepository _inventoriesRepo;
+        private readonly IMapper _mapper;
 
-        public InventoriesService(IInventoriesRepository inventoriesRepo)
+        public InventoriesService(IInventoriesRepository inventoriesRepo, IMapper mapper)
         {
             _inventoriesRepo = inventoriesRepo;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<InventoryDto>> GetInventories()
+        public async Task<IEnumerable<InventoryDto>> GetInventoriesAsync()
         {
-            var dtos = new List<InventoryDto>()
-            {
-                new InventoryDto()
-                {
-                    InventoryId = 1,
-                    CrossReference = "Test",
-                    DistributionUnit = "csdcsd",
-                    Description = "fwefwe",
-                    InventoryType = "csdcsd",
-                    Name = "cdscsdc",
-                    Price = new decimal(5.25),
-                    Quantity = 2,
-                    Rank = "C",
-                    ReorderPoint = 3
-                },
-                new InventoryDto()
-                {
-                    InventoryId = 2,
-                    CrossReference = "vdfvd",
-                    DistributionUnit = "vdfvdf",
-                    Description = "bdbd",
-                    InventoryType = "referf",
-                    Name = "vdfvf",
-                    Price = new decimal(7.34),
-                    Quantity = 6,
-                    Rank = "B",
-                    ReorderPoint = 11
-                }
-            }.ToAsyncEnumerable();
+            var inventories = await _inventoriesRepo.GetAllAsync();
+            return inventories.Select(s => _mapper.Map<InventoryDto>(s));
+        }
 
-            return await dtos.ToList();
+        public async Task<InventoryDto> GetInventoryAsync(long id)
+        {
+            var inventory = await _inventoriesRepo.GetByIdAsync(id);
+            return _mapper.Map<InventoryDto>(inventory);
         }
     }
 }
