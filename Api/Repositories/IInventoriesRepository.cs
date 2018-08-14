@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using Api.Models;
 using Common.Dtos;
 using Common.Enums;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Api.Repositories
 {
     public interface IInventoriesRepository : IRepository<Inventory>
     {
+        Task<bool> InventoryExistsAsync(string name);
     }
 
     public class InventoriesRepository : BaseRepository<Inventory>, IInventoriesRepository
@@ -21,5 +23,7 @@ namespace Api.Repositories
         {
             _logger = logger;
         }
+
+        public async Task<bool> InventoryExistsAsync(string name) => await DbSet.AnyAsync(e => e.Name == name);
     }
 }

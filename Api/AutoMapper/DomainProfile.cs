@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Api.Models;
 using AutoMapper;
 using Common.Dtos;
+using Common.Enums;
+using Common.ViewModels.Inventory;
 
 namespace Api.AutoMapper
 {
@@ -16,6 +18,8 @@ namespace Api.AutoMapper
                 .ForMember(dto => dto.DistributionUnit, opt => opt.MapFrom(s => s.DistributionUnit.ToString()))
                 .ForMember(dto => dto.InventoryType, opt => opt.MapFrom(s => s.InventoryType.ToString()))
                 .ForMember(dto => dto.Rank, opt => opt.MapFrom(s => s.Rank.ToString()));
+
+            CreateMap<InventoryCreateVm, Inventory>();
         }
     }
 }

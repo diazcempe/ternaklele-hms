@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -83,17 +84,13 @@ namespace Api.Controllers
 
         // POST: api/Inventories
         [HttpPost]
-        public async Task<IActionResult> PostInventory([FromBody] Inventory inventory)
+        public async Task<IActionResult> PostInventory([FromBody] InventoryCreateVm vm)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            _context.Inventories.Add(inventory);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetInventory", new { id = inventory.InventoryId }, inventory);
+            _logger.LogInformation("Inventory Create {@vm}", vm);
+            return ProcessOperationResult(await _service.CreateInventoryAsync(vm));
         }
 
         // DELETE: api/Inventories/5
