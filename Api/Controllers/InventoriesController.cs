@@ -33,7 +33,7 @@ namespace Api.Controllers
         [HttpGet]
         public async Task<IEnumerable<InventoryDto>> GetInventories()
         {
-            return await _service.GetInventoriesAsync();
+            return await _service.GetAllAsync();
         }
 
         // GET: api/Inventories/5
@@ -43,7 +43,7 @@ namespace Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var inventoryDto = await _service.GetInventoryAsync(id);
+            var inventoryDto = await _service.GetByIdAsync(id);
 
             if (inventoryDto == null)
                 return NotFound();
@@ -93,8 +93,8 @@ namespace Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            _logger.LogInformation("Inventory Create {@vm}", vm);
-            return ProcessOperationResult(await _service.CreateInventoryAsync(vm));
+            _logger.LogInformation($"Inventory Create {vm}");
+            return ProcessOperationResult(await _service.CreateAsync(vm));
         }
 
         // DELETE: api/Inventories/5
@@ -102,20 +102,10 @@ namespace Api.Controllers
         public async Task<IActionResult> DeleteInventory([FromRoute] long id)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            var inventory = await _context.Inventories.FindAsync(id);
-            if (inventory == null)
-            {
-                return NotFound();
-            }
-
-            _context.Inventories.Remove(inventory);
-            await _context.SaveChangesAsync();
-
-            return Ok(inventory);
+            _logger.LogInformation($"Inventory Delete. Id: {id}");
+            return ProcessOperationResult(await _service.DeleteAsync(id));
         }
 
         private bool InventoryExists(long id)
