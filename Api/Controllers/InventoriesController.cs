@@ -9,20 +9,24 @@ using Microsoft.EntityFrameworkCore;
 using Api.Models;
 using Api.Services;
 using Common.Dtos;
+using Common.ViewModels.Inventory;
+using Microsoft.Extensions.Logging;
 
 namespace Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class InventoriesController : ControllerBase
+    public class InventoriesController : ExtendedControllerBase
     {
         private readonly TernakLeleHmsContext _context;
         private readonly IInventoriesService _service;
+        private readonly ILogger<InventoriesController> _logger;
 
-        public InventoriesController(TernakLeleHmsContext context, IInventoriesService service)
+        public InventoriesController(TernakLeleHmsContext context, IInventoriesService service, ILogger<InventoriesController> logger)
         {
             _context = context;
             _service = service;
+            _logger = logger;
         }
 
         // GET: api/Inventories
