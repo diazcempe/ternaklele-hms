@@ -51,41 +51,6 @@ namespace Api.Controllers
             return Ok(inventoryDto);
         }
 
-        // PUT: api/Inventories/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutInventory([FromRoute] long id, [FromBody] Inventory inventory)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != inventory.InventoryId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(inventory).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!InventoryExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
         // POST: api/Inventories
         [HttpPost]
         public async Task<IActionResult> PostInventory([FromBody] InventoryCreateVm vm)
@@ -93,8 +58,19 @@ namespace Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            _logger.LogInformation($"Inventory Create {vm}");
+            _logger.LogInformation($"Inventory Create. VM: {vm}");
             return ProcessOperationResult(await _service.CreateAsync(vm));
+        }
+
+        // PUT: api/Inventories
+        [HttpPut]
+        public async Task<IActionResult> PutInventory([FromBody] InventoryEditVm vm)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            
+            _logger.LogInformation($"Inventory Edit. VM: {vm}");
+            return ProcessOperationResult(await _service.EditAsync(vm));
         }
 
         // DELETE: api/Inventories/5
@@ -106,11 +82,6 @@ namespace Api.Controllers
 
             _logger.LogInformation($"Inventory Delete. Id: {id}");
             return ProcessOperationResult(await _service.DeleteAsync(id));
-        }
-
-        private bool InventoryExists(long id)
-        {
-            return _context.Inventories.Any(e => e.InventoryId == id);
         }
     }
 }

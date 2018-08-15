@@ -20,6 +20,7 @@ namespace Api.Services
         Task<IEnumerable<InventoryDto>> GetAllAsync();
         Task<InventoryDto> GetByIdAsync(long id);
         Task<OperationResult<object>> CreateAsync(InventoryCreateVm vm);
+        Task<OperationResult<object>> EditAsync(InventoryEditVm vm);
         Task<OperationResult<object>> DeleteAsync(long id);
     }
 
@@ -64,6 +65,27 @@ namespace Api.Services
             // LOGGING AND RETURN
             _logger.LogInformation(ApiEvents.InventoryAdded, $"Model information: {vm}");
             return new OperationResult<object>(HttpStatusCode.Created);
+        }
+
+        public async Task<OperationResult<object>> EditAsync(InventoryEditVm vm)
+        {
+            // CHECKING
+            var inventory = await _inventoriesRepo.GetByIdAsync(vm.InventoryId);
+            if (inventory == null)
+                return new OperationResult<object>(HttpStatusCode.NotFound);
+
+            // CAPTURING original DTO for LOGGING purposes.
+            var inventoryDto = _mapper.Map<InventoryDto>(inventory); // for logging purposes.
+
+            // MAPPING
+            _mapper.Map(vm, inventory);
+
+            // UPDATING DATA TO DB
+            await _inventoriesRepo.SaveChangesAsync();
+
+            // LOGGING AND RETURN
+            _logger.LogInformation(ApiEvents.InventoryUpdated, $"Model information: from {inventoryDto} to {vm}");
+            return new OperationResult<object>(HttpStatusCode.OK);
         }
 
         public async Task<OperationResult<object>> DeleteAsync(long id)

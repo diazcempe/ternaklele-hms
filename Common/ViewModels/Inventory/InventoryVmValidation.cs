@@ -12,4 +12,13 @@ namespace Common.ViewModels.Inventory
             RuleFor(vm => vm.Name).NotEmpty();
         }
     }
+
+    public class InventoryEditVmValidation : AbstractValidator<InventoryEditVm>
+    {
+        public InventoryEditVmValidation()
+        {
+            Include(new InventoryCreateVmValidation());
+            RuleFor(vm => vm.InventoryId).NotEmpty().NotNull();
+        }
+    }
 }

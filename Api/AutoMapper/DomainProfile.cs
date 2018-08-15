@@ -20,6 +20,9 @@ namespace Api.AutoMapper
                 .ForMember(dto => dto.Rank, opt => opt.MapFrom(s => s.Rank.ToString()));
 
             CreateMap<InventoryCreateVm, Inventory>();
+
+            CreateMap<InventoryEditVm, Inventory>()
+                .ForMember(dto => dto.InventoryId, opt => opt.Ignore());
         }
     }
 }
