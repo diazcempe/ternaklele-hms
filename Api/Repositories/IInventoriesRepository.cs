@@ -12,7 +12,7 @@ namespace Api.Repositories
 {
     public interface IInventoriesRepository : IRepository<Inventory>
     {
-        Task<bool> InventoryExistsAsync(string name);
+        Task<bool> IsExistsAsync(string name);
     }
 
     public class InventoriesRepository : BaseRepository<Inventory>, IInventoriesRepository
@@ -24,6 +24,6 @@ namespace Api.Repositories
             _logger = logger;
         }
 
-        public async Task<bool> InventoryExistsAsync(string name) => await DbSet.AnyAsync(e => e.Name == name);
+        public async Task<bool> IsExistsAsync(string name) => await DbSet.AnyAsync(e => e.Name == name);
     }
 }

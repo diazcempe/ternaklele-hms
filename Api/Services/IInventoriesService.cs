@@ -51,7 +51,7 @@ namespace Api.Services
         public async Task<OperationResult<object>> CreateAsync(InventoryCreateVm vm)
         {
             // CHECKING
-            if (await _inventoriesRepo.InventoryExistsAsync(vm.Name))
+            if (await _inventoriesRepo.IsExistsAsync(vm.Name))
                 return new OperationResult<object>($"Inventory with {nameof(vm.Name)}: '{vm.Name}' is already exist in database.");
 
             // MAPPING
