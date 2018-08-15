@@ -31,10 +31,6 @@ using SimpleInjector.Integration.AspNetCore.Mvc;
 
 namespace Api
 {
-    // todo setup AutoMapper, then create DTO and ViewModel to test it.
-    // todo register IRepository, IInventoriesService, IInventoriesRepository to SimpleInjector
-    // todo configure Logger then apply it to TernakLeleHMSContext
-
     public class Startup
     {
         #region SimpleInjector

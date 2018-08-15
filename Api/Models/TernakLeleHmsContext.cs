@@ -11,8 +11,6 @@ namespace Api.Models
         {
         }
 
-        //public TernakLeleHmsContext() : base() { }
-
         public DbSet<Inventory> Inventories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -51,37 +49,6 @@ namespace Api.Models
                     ReorderPoint = 11
                 }
             );
-        }
-
-        private static IEnumerable<Inventory> InventorySeeds()
-        {
-            return new List<Inventory>
-            {
-                new Inventory()
-                {
-                    CrossReference = "Test",
-                    DistributionUnit = DistributionUnit.Ampoule,
-                    Description = "fwefwe",
-                    InventoryType = InventoryType.Medication,
-                    Name = "cdscsdc",
-                    Price = new decimal(5.25),
-                    Quantity = 2,
-                    Rank = Rank.B,
-                    ReorderPoint = 3
-                },
-                new Inventory()
-                {
-                    CrossReference = "vdfvd",
-                    DistributionUnit = DistributionUnit.Bag,
-                    Description = "bdbd",
-                    InventoryType = InventoryType.Supply,
-                    Name = "vdfvf",
-                    Price = new decimal(7.34),
-                    Quantity = 6,
-                    Rank = Rank.C,
-                    ReorderPoint = 11
-                }
-            };
         }
     }
 }
