@@ -82,6 +82,14 @@ namespace Api
                     options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
                 });
 
+            #region MongoDB
+            services.Configure<MongoSettings>(options =>
+            {
+                options.ConnectionString = Configuration.GetSection("MongoConnection:ConnectionString").Value;
+                options.Database = Configuration.GetSection("MongoConnection:Database").Value;
+            });
+            #endregion
+
             #region SimpleInjector
             IntegrateSimpleInjector(services);
             #endregion
