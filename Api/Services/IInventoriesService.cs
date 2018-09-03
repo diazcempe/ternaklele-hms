@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Api.Services
 {
+    // todo create a proper handling of Update and Remove
     public interface IInventoriesService
     {
         Task<IEnumerable<InventoryDto>> GetAllAsync();
@@ -59,8 +60,7 @@ namespace Api.Services
             var newInventory = _mapper.Map<Inventory>(vm);
 
             // ADDING DATA TO DB
-            _inventoriesRepo.Add(newInventory);
-            await _inventoriesRepo.SaveChangesAsync();
+            await _inventoriesRepo.AddAsync(newInventory);
 
             // LOGGING AND RETURN
             _logger.LogInformation(ApiEvents.InventoryAdded, $"Model information: {vm}");
@@ -76,12 +76,9 @@ namespace Api.Services
 
             // CAPTURING original DTO for LOGGING purposes.
             var inventoryDto = _mapper.Map<InventoryDto>(inventory); // for logging purposes.
-
-            // MAPPING
-            _mapper.Map(vm, inventory);
-
+            
             // UPDATING DATA TO DB
-            await _inventoriesRepo.SaveChangesAsync();
+            await _inventoriesRepo.UpdateNoteAsync(vm);
 
             // LOGGING AND RETURN
             _logger.LogInformation(ApiEvents.InventoryUpdated, $"Model information: from {inventoryDto} to {vm}");
@@ -99,8 +96,7 @@ namespace Api.Services
             var inventoryDto = _mapper.Map<InventoryDto>(inventory); // for logging purposes.
 
             // DELETING DATA FROM DB
-            _inventoriesRepo.Remove(inventory);
-            await _inventoriesRepo.SaveChangesAsync();
+            await _inventoriesRepo.RemoveAsync(id);
 
             // LOGGING AND RETURN
             _logger.LogInformation(ApiEvents.InventoryDeleted, $"Model information: {inventoryDto}");
