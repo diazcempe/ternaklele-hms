@@ -70,6 +70,17 @@ namespace Api
             services.AddAutoMapper();
             #endregion
 
+            #region CORS handling
+            // Add service and create Policy with options 
+            services.AddCors(options => {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials());
+            });
+            #endregion
+
             services.AddMvc(options =>
                 {
                     options.Filters.Add(new ProducesAttribute("application/json"));
@@ -122,6 +133,11 @@ namespace Api
 
             #region SimpleInjector
             _container.Verify();
+            #endregion
+
+            #region CORS handling
+            // global policy, if assigned here (it could be defined individually for each controller) 
+            app.UseCors("CorsPolicy");
             #endregion
 
             app.UseMvc();
